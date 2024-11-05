@@ -15,6 +15,9 @@ public class Player : MonoBehaviour
     public float shootTime;
     public Transform bulletSpawn;
 
+    [Header("Life")]
+    public int life;
+
 
     void Start()
     {
@@ -34,9 +37,10 @@ public class Player : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Bullet"))
+        if (collision.gameObject.CompareTag("EnemyBullet"))
         {
-            Destroy(gameObject);
+            Destroy(collision.gameObject);
+            StartCoroutine(Damage());
         }
     }
 
@@ -44,5 +48,20 @@ public class Player : MonoBehaviour
     {
         var a = Instantiate(bullet, bulletSpawn.position, bulletSpawn.rotation);
         a.gameObject.GetComponent<Rigidbody2D>().velocity = bulletSpawn.up * (bulletSpeed + speed) * Time.deltaTime;
+    }
+
+    public IEnumerator Damage()
+    {
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        life--;
+        sr.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        sr.color = Color.white;
+
+        yield return new WaitForSeconds(0.1f);
+        if (life <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }
