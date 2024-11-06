@@ -62,6 +62,10 @@ public class Player : MonoBehaviour
         if (life <= 0)
         {
             Destroy(gameObject);
+
+
+            Timer t = GameObject.Find("Timer").GetComponent<Timer>();
+            t.LoseScenary();
         }
     }
 }
