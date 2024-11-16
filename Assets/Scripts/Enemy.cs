@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -91,7 +90,7 @@ public class Enemy : MonoBehaviour
             var s = Instantiate(square, randomPoint, Quaternion.identity);
 
             Color currentColor = s.GetComponent<SpriteRenderer>().color;
-            currentColor.a = 0.5f; 
+            currentColor.a = 0.1f; 
             s.GetComponent<SpriteRenderer>().color = currentColor;
 
             s.GetComponent<Collider2D>().enabled = false;
@@ -120,7 +119,7 @@ public class Enemy : MonoBehaviour
             var s = Instantiate(cone, new Vector2(randomX,randomY), Quaternion.identity);
 
             Color currentColor = s.GetComponent<SpriteRenderer>().color;
-            currentColor.a = 0.5f; 
+            currentColor.a = 0.1f; 
             s.GetComponent<SpriteRenderer>().color = currentColor;
 
             s.GetComponent<Collider2D>().enabled = false;
