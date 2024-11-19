@@ -1083,6 +1083,65 @@ RectTransform:
   m_AnchoredPosition: {x: -468.41, y: -317.11}
   m_SizeDelta: {x: 343.17, y: 85.79}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &485589746
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 485589748}
+  - component: {fileID: 485589747}
+  m_Layer: 0
+  m_Name: BulletPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &485589747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485589746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a7ec7e9968db0246924f979ca9e8112, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pooledPlayerBullets: []
+  playerBulletsToPool: {fileID: 5436104494944288954, guid: dfcbb73f1ec80d54999a8aabe067c4b1, type: 3}
+  playerBulletsAmountToPool: 100
+  pooledEnemyBullets: []
+  enemyBulletsToPool: {fileID: 1217214974062013269, guid: f0ec960c6b937354aa1a10784cf9ff6e, type: 3}
+  enemyBulletsAmountToPool: 500
+  pooledSquare: []
+  squareToPool: {fileID: 7591815922168986758, guid: cfaa84238effd504b95fceb9694c4c5a, type: 3}
+  squareAmountToPool: 3
+  pooledCone: []
+  coneToPool: {fileID: 2448377870391698138, guid: 3bfc06883dd641949a2b6dec3a6f91ab, type: 3}
+  coneAmountToPool: 3
+  pooledProjectile: []
+  projectileToPool: {fileID: 6718992983794382647, guid: 46957d7e975a455459b11c41661fa1cb, type: 3}
+  projectileAmountToPool: 3
+--- !u!4 &485589748
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485589746}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.8761684, y: -0.396645, z: -0.13052079}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -2589,6 +2648,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a7ec7e9968db0246924f979ca9e8112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pooledPlayerBullets: []
+  playerBulletsToPool: {fileID: 0}
+  playerBulletsAmountToPool: 0
+  pooledEnemyBullets: []
+  enemyBulletsToPool: {fileID: 0}
+  enemyBulletsAmountToPool: 0
+  pooledSquare: []
+  squareToPool: {fileID: 0}
+  squareAmountToPool: 0
+  pooledCone: []
+  coneToPool: {fileID: 0}
+  coneAmountToPool: 0
+  pooledProjectile: []
+  projectileToPool: {fileID: 0}
+  projectileAmountToPool: 0
 --- !u!4 &1516568226
 Transform:
   m_ObjectHideFlags: 0
@@ -3567,3 +3641,4 @@ SceneRoots:
   - {fileID: 1546814264}
   - {fileID: 531033863}
   - {fileID: 1516568226}
+  - {fileID: 485589748}

@@ -17,7 +17,7 @@ public class Walls : MonoBehaviour
     {
         if (collision.gameObject)
         {
-            Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
         }
     }
 }

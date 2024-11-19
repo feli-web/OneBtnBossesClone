@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GiantProjectiles : MonoBehaviour
+public class RotateObject : MonoBehaviour
 {
     public float rotationSpeed;
     void Start()

@@ -10,7 +10,6 @@ public class Player : MonoBehaviour
     private int rotationDirection = 1;
 
     [Header("Shooting")]
-    public GameObject bullet;
     public float bulletSpeed;
     public float shootTime;
     public Transform bulletSpawn;
@@ -20,7 +19,7 @@ public class Player : MonoBehaviour
     public TextMeshProUGUI lifeText;
 
     [Header("Dash")]
-    private float dashTime = 100; 
+    private float dashTime = 100;
     private bool isDashing = false;
     private bool dashRecharge = false;
     public TextMeshProUGUI dashText;
@@ -39,7 +38,7 @@ public class Player : MonoBehaviour
 
         if (dashRecharge)
         {
-            dashTime += Time.fixedDeltaTime * 10; 
+            dashTime += Time.fixedDeltaTime * 10;
             if (dashTime >= 100)
             {
                 dashTime = 100;
@@ -62,15 +61,25 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("EnemyBullet"))
         {
-            Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
             StartCoroutine(Damage());
         }
     }
 
     void Shoot()
     {
-        var a = Instantiate(bullet, bulletSpawn.position, bulletSpawn.rotation);
-        a.gameObject.GetComponent<Rigidbody2D>().velocity = bulletSpawn.up * (bulletSpeed + speed) * Time.deltaTime;
+        GameObject bullet = BulletPool.SharedInstance.GetPooledPlayerBullets();
+        if (bullet != null)
+        {
+            bullet.transform.position = bulletSpawn.position;
+            bullet.transform.rotation = bulletSpawn.rotation;
+            bullet.SetActive(true);
+
+            // Reset and assign velocity
+            Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+            rb.velocity = Vector2.zero;
+            rb.velocity = bulletSpawn.up * bulletSpeed * Time.deltaTime;
+        }
     }
 
     public IEnumerator Damage()
@@ -102,30 +111,30 @@ public class Player : MonoBehaviour
     public IEnumerator Dash()
     {
         isDashing = true;
-        GetComponent<Collider2D>().enabled = false; 
-        GetComponent<SpriteRenderer>().color = Color.grey; 
+        GetComponent<Collider2D>().enabled = false;
+        GetComponent<SpriteRenderer>().color = Color.grey;
 
-        float dashDuration = 0.5f; 
+        float dashDuration = 0.5f;
         float elapsedTime = 0;
 
         while (elapsedTime < dashDuration && dashTime > 0)
         {
-            dashTime -= Time.deltaTime * 50; 
+            dashTime -= Time.deltaTime * 50;
             elapsedTime += Time.deltaTime;
 
             dashText.text = "Dash: " + Mathf.Clamp(dashTime, 0, 100).ToString("F0");
             yield return null;
         }
 
-        GetComponent<Collider2D>().enabled = true; 
-        GetComponent<SpriteRenderer>().color = Color.white; 
+        GetComponent<Collider2D>().enabled = true;
+        GetComponent<SpriteRenderer>().color = Color.white;
 
         isDashing = false;
         dashRecharge = true;
 
         while (dashRecharge && dashTime < 100)
         {
-            dashTime += Time.deltaTime * 10; 
+            dashTime += Time.deltaTime * 10;
             dashText.text = "Dash: " + Mathf.Clamp(dashTime, 0, 100).ToString("F0");
             yield return null;
         }

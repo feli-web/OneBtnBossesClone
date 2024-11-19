@@ -6,23 +6,19 @@ public class Enemy : MonoBehaviour
     public int life;
 
     [Header("Shooting")]
-    public GameObject bullet;
     public float bulletSpeed;
     public float shootTime;
     public Transform bulletSpawn;
     public float rotateSpawn;
 
     [Header("SquareAttack")]
-    public GameObject square;
     public float squareAttackTime;
-    public float radius = 5f;
-    
+    public float radius;
+
     [Header("ConeAttack")]
-    public GameObject cone;
     public float coneAttackTime;
-    
+
     [Header("ProjectileAttack")]
-    public GameObject projectile;
     public float projectileSpeed;
     public float projectileAttackTime;
 
@@ -34,16 +30,16 @@ public class Enemy : MonoBehaviour
         StartCoroutine(ProjectileAttack());
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         bulletSpawn.gameObject.transform.Rotate(0, 0, rotateSpawn);
     }
+
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Bullet")) 
+        if (collision.gameObject.CompareTag("Bullet"))
         {
-            Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
             StartCoroutine(Damage());
         }
     }
@@ -56,7 +52,6 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         sr.color = Color.white;
 
-        yield return new WaitForSeconds(0.1f);
         if (life <= 0)
         {
             Destroy(gameObject);
@@ -68,86 +63,100 @@ public class Enemy : MonoBehaviour
 
     void Shoot()
     {
-        var a = Instantiate(bullet, new Vector3(1,0,0), Quaternion.Euler(0,0,0));
-        a.gameObject.GetComponent<Rigidbody2D>().velocity = bulletSpawn.right * (bulletSpeed +1) * Time.deltaTime;
-        
-        var b = Instantiate(bullet, new Vector3(-1,0,0), Quaternion.Euler(0,0,0));
-        b.gameObject.GetComponent<Rigidbody2D>().velocity = bulletSpawn.right * -(bulletSpeed +2) * Time.deltaTime;
-        
-        var c = Instantiate(bullet, new Vector3(0,1,0), Quaternion.Euler(0,0,0));
-        c.gameObject.GetComponent<Rigidbody2D>().velocity = bulletSpawn.up * (bulletSpeed +3) * Time.deltaTime;
-        
-        var d = Instantiate(bullet, new Vector3(0,-1,0), Quaternion.Euler(0,0,0));
-        d.gameObject.GetComponent<Rigidbody2D>().velocity = bulletSpawn.up * -(bulletSpeed) * Time.deltaTime;
+        GameObject bullet = BulletPool.SharedInstance.GetPooledEnemyBullets();
+        if (bullet != null)
+        {
+            bullet.transform.position = bulletSpawn.position;
+            bullet.transform.rotation = bulletSpawn.rotation;
+            bullet.SetActive(true);
+
+            // Reset and assign velocity
+            Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+            rb.velocity = Vector2.zero;
+            rb.velocity = bulletSpawn.right * bulletSpeed * Time.deltaTime;
+        }
     }
+
     public IEnumerator SquareAttack()
     {
         while (true)
         {
             yield return new WaitForSeconds(squareAttackTime);
 
-            Vector2 randomPoint = Random.insideUnitCircle.normalized * radius;
-            var s = Instantiate(square, randomPoint, Quaternion.identity);
+            GameObject square = BulletPool.SharedInstance.GetPooledSquare();
+            if (square != null)
+            {
+                Vector2 randomPoint = Random.insideUnitCircle.normalized * radius;
+                square.transform.position = randomPoint;
+                square.transform.rotation = Quaternion.identity;
+                square.SetActive(true);
 
-            Color currentColor = s.GetComponent<SpriteRenderer>().color;
-            currentColor.a = 0.1f; 
-            s.GetComponent<SpriteRenderer>().color = currentColor;
+                SpriteRenderer sr = square.GetComponent<SpriteRenderer>();
+                sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, 0.1f);
+                square.GetComponent<Collider2D>().enabled = false;
 
-            s.GetComponent<Collider2D>().enabled = false;
+                yield return new WaitForSeconds(2);
 
-            yield return new WaitForSeconds(2);
+                sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, 1f);
+                square.GetComponent<Collider2D>().enabled = true;
 
-            Color currentColor2 = s.GetComponent<SpriteRenderer>().color;
-            currentColor2.a = 1f; 
-            s.GetComponent<SpriteRenderer>().color = currentColor2;
+                yield return new WaitForSeconds(2);
 
-            s.GetComponent<Collider2D>().enabled = true;
-
-            yield return new WaitForSeconds(2);
-
-            Destroy(s);
+                square.SetActive(false);
+            }
         }
     }
+
     public IEnumerator ConeAttack()
     {
         while (true)
         {
             yield return new WaitForSeconds(coneAttackTime);
 
-            float randomX = Random.value > 0.5f ? -3f : 3f;
-            float randomY = Random.value > 0.5f ? -3f : 3f;
-            var s = Instantiate(cone, new Vector2(randomX,randomY), Quaternion.identity);
+            GameObject cone = BulletPool.SharedInstance.GetPooledCone();
+            if (cone != null)
+            {
+                float randomX = Random.value > 0.5f ? -3f : 3f;
+                float randomY = Random.value > 0.5f ? -3f : 3f;
+                cone.transform.position = new Vector2(randomX, randomY);
+                cone.transform.rotation = Quaternion.identity;
+                cone.SetActive(true);
 
-            Color currentColor = s.GetComponent<SpriteRenderer>().color;
-            currentColor.a = 0.1f; 
-            s.GetComponent<SpriteRenderer>().color = currentColor;
+                SpriteRenderer sr = cone.GetComponent<SpriteRenderer>();
+                sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, 0.1f);
+                cone.GetComponent<Collider2D>().enabled = false;
 
-            s.GetComponent<Collider2D>().enabled = false;
+                yield return new WaitForSeconds(2);
 
-            yield return new WaitForSeconds(2);
+                sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, 1f);
+                cone.GetComponent<Collider2D>().enabled = true;
 
-            Color currentColor2 = s.GetComponent<SpriteRenderer>().color;
-            currentColor2.a = 1f; 
-            s.GetComponent<SpriteRenderer>().color = currentColor2;
+                yield return new WaitForSeconds(2);
 
-            s.GetComponent<Collider2D>().enabled = true;
-
-            yield return new WaitForSeconds(2);
-
-            Destroy(s);
+                cone.SetActive(false);
+            }
         }
     }
+
     public IEnumerator ProjectileAttack()
     {
         while (true)
         {
             yield return new WaitForSeconds(projectileAttackTime);
 
-            var s = Instantiate(projectile, new Vector2(0,0), Quaternion.identity);
+            GameObject projectile = BulletPool.SharedInstance.GetPooledProjectile();
+            if (projectile != null)
+            {
+                projectile.transform.position = Vector2.zero;
+                projectile.transform.rotation = Quaternion.identity;
+                projectile.SetActive(true);
 
-            Vector2 randomDirection = Random.insideUnitCircle.normalized;
-            s.GetComponent<Rigidbody2D>().velocity = randomDirection * projectileSpeed * Time.deltaTime;
+                Vector2 randomDirection = Random.insideUnitCircle.normalized;
+                Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+                rb.velocity = Vector2.zero;
+                rb.velocity = randomDirection * projectileSpeed * Time.deltaTime;
+            }
         }
     }
-
 }
+
