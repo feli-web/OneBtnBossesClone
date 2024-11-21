@@ -1,9 +1,11 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
     public int life;
+    public TextMeshProUGUI lifeText;
 
     [Header("Shooting")]
     public float bulletSpeed;
@@ -24,6 +26,7 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
+        lifeText.text = life.ToString();
         InvokeRepeating("Shoot", 0, shootTime);
         StartCoroutine(SquareAttack());
         StartCoroutine(ConeAttack());
@@ -48,6 +51,7 @@ public class Enemy : MonoBehaviour
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         life--;
+        lifeText.text = life.ToString();
         sr.color = Color.red;
         yield return new WaitForSeconds(0.1f);
         sr.color = Color.white;
