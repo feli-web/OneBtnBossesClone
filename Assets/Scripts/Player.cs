@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
@@ -23,6 +24,27 @@ public class Player : MonoBehaviour
     private bool isDashing = false;
     private bool dashRecharge = false;
     public TextMeshProUGUI dashText;
+
+    private PlayerController pc;
+
+    void Awake()
+    {
+        pc = new PlayerController();
+    }
+
+    void OnEnable()
+    {
+        pc.Enable();
+        pc.Player.Direction.performed += _ => ChangeOrientation();
+        pc.Player.Dash.performed += _ => StartDash();
+    }
+
+    void OnDisable()
+    {
+        pc.Player.Direction.performed -= _ => ChangeOrientation();
+        pc.Player.Dash.performed -= _ => StartDash();
+        pc.Disable();
+    }
 
     void Start()
     {
